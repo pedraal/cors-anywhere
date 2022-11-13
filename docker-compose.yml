@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  cors-anywhere:
+    build: ./
+    restart: always
+    environment:
+      NODE_ENV: production
+    expose:
+      - 8080
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.cors-anywhere-service.loadbalancer.server.port=8080
+      - traefik.http.routers.cors-anywhere.rule=Host(`${CORS_ANYWHERE_DOMAIN}`)
+      - traefik.http.routers.cors-anywhere.entrypoints=web-secured
+      - traefik.http.routers.cors-anywhere.tls.certresolver=le-resolver
+
+networks:
+  proxy:
+    external: true
