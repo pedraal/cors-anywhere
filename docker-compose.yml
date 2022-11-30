@@ -12,10 +12,17 @@ services:
       - proxy
     labels:
       - traefik.enable=true
-      - traefik.http.services.cors-anywhere-service.loadbalancer.server.port=8080
+      - traefik.http.services.cors-anywhere.loadbalancer.server.port=8080
+
+      - traefik.http.routers.cors-anywhere.service=cors-anywhere@docker
       - traefik.http.routers.cors-anywhere.rule=Host(`${CORS_ANYWHERE_DOMAIN}`)
-      - traefik.http.routers.cors-anywhere.entrypoints=web-secured
-      - traefik.http.routers.cors-anywhere.tls.certresolver=le-resolver
+      - traefik.http.routers.cors-anywhere.entrypoints=web
+      - traefik.http.routers.cors-anywhere.middlewares=redirect-https
+
+      - traefik.http.routers.cors-anywhere-secured.service=cors-anywhere@docker
+      - traefik.http.routers.cors-anywhere-secured.entrypoints=web-secured
+      - traefik.http.routers.cors-anywhere-secured.tls=true
+      - traefik.http.routers.cors-anywhere-secured.rule=Host(`${CORS_ANYWHERE_DOMAIN}`)
 
 networks:
   proxy:
